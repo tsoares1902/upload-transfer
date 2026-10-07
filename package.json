@@ -1,0 +1,10 @@
+{
+  "name": "@spa/upload-transfer",
+  "version": "0.1.0",
+  "description": "Transferência direta e resiliente de arquivos para object storage.",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=10"
+  }
+}

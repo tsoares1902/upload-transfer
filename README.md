@@ -1,38 +1,48 @@
-# Upload Transfer
+# @spa/upload-transfer
 
-Pacote TypeScript para transferência direta e resiliente de arquivos para object storage.
+Biblioteca TypeScript para transferência HTTP direta de arquivos a URLs autorizadas pela aplicação consumidora.
 
-O Upload Transfer atua no transfer plane do processo de upload. Ele recebe uma autorização temporária fornecida pela aplicação e realiza a transferência dos dados diretamente para o storage, sem transportar o arquivo pela API backend.
+## Objetivo
 
-O pacote é independente de framework frontend e de storage provider.
+Centralizar o transporte de arquivos para armazenamento de objetos, preservando a responsabilidade da aplicação e do backend pela preparação, autorização e confirmação dos uploads.
 
-## Features
+A primeira integração será realizada no módulo **Comissões da Nova Intranet**, substituindo exclusivamente a requisição HTTP que envia o arquivo diretamente ao bucket.
 
-- Transferência direta para object storage
-- File / Blob
-- Transfer Authorization
-- Fetch nativo
-- Validação da resposta da transferência
-- Resultado padronizado
-- Erros padronizados
-- Cancelamento
-- Timeout configurável
-- Retry
-- Backoff
-- Progresso de upload
-- Multipart / chunk
-- Retry por chunk
-- Controle de concorrência
-- Resume
-- Framework agnostic
-- Provider agnostic
-- Zero runtime dependencies como objetivo
+## Escopo do MVP
 
-## Compatibility
+- Upload HTTP direto, com arquivo no corpo da requisição.
+- URL, método e headers fornecidos pela aplicação.
+- Compatibilidade com Browser e Node.js 22.
+- Progresso tipado.
+- Resultado e exceções tipados.
+- Testes automatizados.
 
-- Node.js >= 10
-- Browsers modernos compatíveis com as Web APIs utilizadas pelo pacote
+## Fora do escopo
 
-## Status
+A biblioteca não prepara uploads, gera assinaturas S3, administra credenciais, confirma registros ou implementa regras de negócio.
 
-Em desenvolvimento.
+Multipart, chunks, retry automático e retomada de uploads não fazem parte do MVP.
+
+## Tecnologias
+
+TypeScript strict, ESM, tsdown, Vitest, Playwright, ESLint e Prettier.
+
+## Desenvolvimento
+
+```bash
+npm install
+npm run typecheck
+npm run lint
+npm run format:check
+npm run build
+```
+
+Os testes serão adicionados nas próximas etapas.
+
+## Estado
+
+**Passo 0 — Fundação.** A API de upload ainda não está implementada.
+
+## Distribuição
+
+O pacote será distribuído por registry corporativo privado, após definição das permissões e da configuração de publicação.

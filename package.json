@@ -26,10 +26,15 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:browser": "playwright test",
+    "test:browser:install": "playwright install chromium",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm run test && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^26.6.5",
     "eslint": "^9.0.0",
     "prettier": "^3.0.0",
     "tsdown": "^0.17.0",

@@ -9,25 +9,43 @@ const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const distDirectory = resolve(projectRoot, 'dist');
 
 /**
+ * Executa uma expressão JavaScript em um processo Node.js isolado.
+ *
+ * @param {string[]} conditions Condições adicionais de resolução.
+ * @param {string} expression Expressão JavaScript a executar.
+ * @returns {string} Resultado produzido pelo processo.
+ */
+function executeNode(conditions: string[], expression: string): string {
+  return execFileSync(process.execPath, [...conditions, '--input-type=module', '-e', expression], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+  }).trim();
+}
+
+/**
  * Executa uma importação do pacote em um processo Node.js isolado.
  *
  * @param {string[]} conditions Condições adicionais de resolução.
  * @returns {string} Nome do transporte selecionado.
  */
 function resolveTransport(conditions: string[]): string {
-  return execFileSync(
-    process.execPath,
-    [
-      ...conditions,
-      '--input-type=module',
-      '-e',
-      "import('@spa/upload-transfer').then(m => console.log(m.createUploadTransport().constructor.name))",
-    ],
-    {
-      cwd: projectRoot,
-      encoding: 'utf8',
-    },
-  ).trim();
+  return executeNode(
+    conditions,
+    "import('@spa/upload-transfer').then(m => console.log(m.createUploadTransport().constructor.name))",
+  );
+}
+
+/**
+ * Executa a composição do caso de uso em um processo Node.js isolado.
+ *
+ * @param {string[]} conditions Condições adicionais de resolução.
+ * @returns {string} Nome do caso de uso criado.
+ */
+function resolveUseCase(conditions: string[]): string {
+  return executeNode(
+    conditions,
+    "import('@spa/upload-transfer').then(m => console.log(m.createUploadFileUseCase().constructor.name))",
+  );
 }
 
 /**
@@ -92,6 +110,16 @@ describe('Package exports', () => {
 
     it('selects the Browser transport with the browser condition', () => {
       expect(resolveTransport(['--conditions=browser'])).toBe('XhrTransportAdapter');
+    });
+  });
+
+  describe('Use case composition', () => {
+    it('creates UploadFileUseCase in Node.js', () => {
+      expect(resolveUseCase([])).toBe('UploadFileUseCase');
+    });
+
+    it('creates UploadFileUseCase with the browser condition', () => {
+      expect(resolveUseCase(['--conditions=browser'])).toBe('UploadFileUseCase');
     });
   });
 

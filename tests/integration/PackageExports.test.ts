@@ -103,6 +103,43 @@ function collectBrowserModules(filename: string, visited = new Set<string>()): s
 }
 
 describe('Package exports', () => {
+  describe('Public runtime API', () => {
+    it.each([{ conditions: [] }, { conditions: ['--conditions=browser'] }])(
+      'exposes the approved API with $conditions',
+      ({ conditions }) => {
+        const result = JSON.parse(
+          executeNode(
+            conditions,
+            `
+        import * as api from '@spa/upload-transfer';
+        const names = Object.keys(api).sort();
+        const errors = [new api.UploadAbortException(), new api.UploadNetworkException(),
+          new api.UploadTimeoutException(), new api.UploadHttpException(403)];
+        console.log(JSON.stringify({ names, functions: Object.values(api).every(value => typeof value === 'function'),
+          base: errors.every(error => error instanceof api.UploadException),
+          useCase: api.createUploadFileUseCase() instanceof api.UploadFileUseCase }));
+      `,
+          ),
+        );
+        expect(result).toEqual({
+          names: [
+            'createUploadFileUseCase',
+            'createUploadTransport',
+            'UploadFileUseCase',
+            'UploadException',
+            'UploadAbortException',
+            'UploadNetworkException',
+            'UploadTimeoutException',
+            'UploadHttpException',
+          ].sort(),
+          functions: true,
+          base: true,
+          useCase: true,
+        });
+      },
+    );
+  });
+
   describe('Conditional resolution', () => {
     it('selects the Node transport by default', () => {
       expect(resolveTransport([])).toBe('NodeTransportAdapter');

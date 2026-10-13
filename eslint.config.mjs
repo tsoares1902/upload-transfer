@@ -11,6 +11,12 @@ export default tseslint.config(
       'test-results/**',
     ],
   },
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: { process: 'readonly', console: 'readonly', URL: 'readonly' },
+    },
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
 );
